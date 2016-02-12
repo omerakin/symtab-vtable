@@ -71,10 +71,6 @@ public class TestExprTypes extends CommonBaseTest {
 
 		String expecting = readFile(new File(testFolder,Types_filename).getPath());
 		String result = computeTypes.getRefOutput();
-
-		System.out.printf("with open('%s', 'w') as text_file:\n", Types_filename);
-		System.out.printf("    text_file.write(\"\"\"%s\"\"\")\n", result);
-
-//		assertEquals(expecting, result);
+		assertEquals(expecting, result);
 	}
 }
