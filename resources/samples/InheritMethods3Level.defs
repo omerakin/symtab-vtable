@@ -1,4 +1,8 @@
 global
+    global.int
+    global.float
+    global.string
+    global.void
     Animal
         getID
             <getID.this:global.Animal>

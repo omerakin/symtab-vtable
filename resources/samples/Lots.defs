@@ -1,11 +1,15 @@
 global
+    global.int
+    global.float
+    global.string
+    global.void
     T
-        <T.x:int>
-        <T.y:float>
+        <T.x:global.int>
+        <T.y:global.float>
         foo
             <foo.this:global.T>
         bar
             <bar.this:global.T>
-            <bar.x:int>
+            <bar.x:global.int>
             <bar.q:global.T>
     main

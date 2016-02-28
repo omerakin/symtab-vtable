@@ -1,12 +1,16 @@
 global
+    global.int
+    global.float
+    global.string
+    global.void
     Employee
-        <Employee.number:int>
+        <Employee.number:global.int>
         getID
             <getID.this:global.Employee>
         something
             <something.this:global.Employee>
     Mgr
-        <Mgr.level:int>
+        <Mgr.level:global.int>
         <Mgr.other:global.Employee>
     Coder
         <Coder.boss:global.Mgr>

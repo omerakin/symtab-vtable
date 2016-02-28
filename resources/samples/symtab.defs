@@ -1,19 +1,23 @@
 global
+    global.int
+    global.float
+    global.string
+    global.void
     Employee
-        <Employee.ID:int>
+        <Employee.ID:global.int>
         getID
             <getID.this:global.Employee>
         setID
             <setID.this:global.Employee>
-            <setID.ID:int>
+            <setID.ID:global.int>
     Mgr
-        <Mgr.level:int>
+        <Mgr.level:global.int>
     Coder
-        <Coder.salary:float>
+        <Coder.salary:global.float>
         <Coder.boss:global.Mgr>
         raise
             <raise.this:global.Coder>
-            <raise.v:float>
+            <raise.v:global.float>
         speak
             <speak.this:global.Coder>
         workFor

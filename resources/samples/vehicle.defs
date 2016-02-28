@@ -1,4 +1,8 @@
 global
+    global.int
+    global.float
+    global.string
+    global.void
     Vehicle
         start
             <start.this:global.Vehicle>
@@ -9,11 +13,11 @@ global
             <start.this:global.Car>
         setDoors
             <setDoors.this:global.Car>
-            <setDoors.n:int>
+            <setDoors.n:global.int>
     Truck
         start
             <start.this:global.Truck>
         setPayload
             <setPayload.this:global.Truck>
-            <setPayload.n:int>
+            <setPayload.n:global.int>
     main
