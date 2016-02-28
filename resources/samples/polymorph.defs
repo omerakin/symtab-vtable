@@ -7,9 +7,15 @@ global
         <Animal.ID:global.int>
         getID
             <getID.this:global.Animal>
+            local
         speak
             <speak.this:global.Animal>
+            local
     Dog
         speak
             <speak.this:global.Dog>
+            local
     main
+        local
+            <local.a:global.Animal>
+            <local.d:global.Dog>

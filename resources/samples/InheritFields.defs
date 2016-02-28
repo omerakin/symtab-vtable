@@ -7,3 +7,5 @@ global
         <Animal.ID:global.int>
     Dog
     main
+        local
+            <local.d:global.Dog>

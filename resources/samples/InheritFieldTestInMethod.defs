@@ -8,6 +8,10 @@ global
     Dog
         speak
             <speak.this:global.Dog>
+            local
         speak2
             <speak2.this:global.Dog>
+            local
     main
+        local
+            <local.d:global.Dog>

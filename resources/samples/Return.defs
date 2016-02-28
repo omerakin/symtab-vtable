@@ -7,4 +7,6 @@ global
         foo
             <foo.this:global.T>
             <foo.x:global.int>
+            local
     main
+        local

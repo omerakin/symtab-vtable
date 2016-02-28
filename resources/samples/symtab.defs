@@ -7,9 +7,11 @@ global
         <Employee.ID:global.int>
         getID
             <getID.this:global.Employee>
+            local
         setID
             <setID.this:global.Employee>
             <setID.ID:global.int>
+            local
     Mgr
         <Mgr.level:global.int>
     Coder
@@ -18,9 +20,15 @@ global
         raise
             <raise.this:global.Coder>
             <raise.v:global.float>
+            local
         speak
             <speak.this:global.Coder>
+            local
         workFor
             <workFor.this:global.Coder>
             <workFor.e:global.Employee>
+            local
     main
+        local
+            <local.ID:global.int>
+            <local.c:global.Coder>

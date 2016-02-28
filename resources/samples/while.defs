@@ -4,3 +4,6 @@ global
     global.string
     global.void
     main
+        local
+            <local.x:global.int>
+            local

@@ -7,4 +7,8 @@ global
         foo
             <foo.this:global.T>
             <foo.x:global.float>
+            local
     main
+        local
+            <local.t:global.T>
+            <local.y:global.float>

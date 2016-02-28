@@ -8,3 +8,5 @@ global
     Dog
     Pekinese
     main
+        local
+            <local.d:global.Pekinese>

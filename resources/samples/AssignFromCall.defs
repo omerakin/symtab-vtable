@@ -6,4 +6,8 @@ global
     T
         f
             <f.this:global.T>
+            local
     main
+        local
+            <local.t:global.T>
+            <local.q:global.float>

@@ -8,8 +8,14 @@ global
         <T.y:global.float>
         foo
             <foo.this:global.T>
+            local
         bar
             <bar.this:global.T>
             <bar.x:global.int>
             <bar.q:global.T>
+            local
+                <local.z:global.int>
     main
+        local
+            <local.t:global.T>
+            <local.u:global.T>
