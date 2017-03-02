@@ -36,7 +36,8 @@ public class TestExprTypes extends CommonBaseTest {
 
 	public void checkSymbolDefs(String filename) throws Exception {
 		URL testFolderURL = TestSymbolDefs.class.getClassLoader().getResource(SAMPLES_DIR);
-		String testFolder = testFolderURL.getPath();
+		//String testFolder = testFolderURL.getPath();
+		String testFolder = "/Users/omerakin/git/CS 652/vtable-symtab-omerakinusf/target/classes/samples";
 
 		String J_pathToFile = testFolder+"/"+filename;
 		String Types_filename = basename(filename)+".types";
