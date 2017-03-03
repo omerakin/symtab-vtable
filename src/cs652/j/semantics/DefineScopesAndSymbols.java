@@ -7,10 +7,7 @@ import org.antlr.v4.runtime.RuleContext;
 
 public class DefineScopesAndSymbols extends JBaseListener {
 	public Scope currentScope;
-	public static final Type JINT_TYPE = new JPrimitiveType("int");
-	public static final Type JFLOAT_TYPE = new JPrimitiveType("float");
-	public static final Type JSTRING_TYPE = new JPrimitiveType("string");
-	public static final Type JVOID_TYPE = new JPrimitiveType("void");
+	public ComputeTypes computeTypes;
 
 	public DefineScopesAndSymbols(GlobalScope globals) {
 		currentScope = globals;
@@ -18,10 +15,10 @@ public class DefineScopesAndSymbols extends JBaseListener {
 
 	@Override
 	public void enterFile(JParser.FileContext ctx) {
-		currentScope.define((Symbol) JINT_TYPE);
-		currentScope.define((Symbol) JFLOAT_TYPE);
-		currentScope.define((Symbol) JSTRING_TYPE);
-		currentScope.define((Symbol) JVOID_TYPE);
+		currentScope.define((Symbol) computeTypes.JINT_TYPE);
+		currentScope.define((Symbol) computeTypes.JFLOAT_TYPE);
+		currentScope.define((Symbol) computeTypes.JSTRING_TYPE);
+		currentScope.define((Symbol) computeTypes.JVOID_TYPE);
 		ctx.scope = (GlobalScope) currentScope;
 	}
 
@@ -48,9 +45,13 @@ public class DefineScopesAndSymbols extends JBaseListener {
 	public void enterMethodDeclaration(JParser.MethodDeclarationContext ctx) {
 		String id = ctx.ID().getText();
 		JMethod jMethod = new JMethod(id, ctx.methodBody());
+		if (ctx.jType() != null) {
+			jMethod.setType((Type) currentScope.resolve(ctx.jType().getText()));
+		}
 		currentScope.define(jMethod);
 		currentScope = jMethod;
-		JArg jArg = new JArg("this", JINT_TYPE);////////////////////////////
+		JArg jArg = new JArg("this");
+		jArg.setType((Type) currentScope.getEnclosingScope());
 		currentScope.define(jArg);
 		ctx.scope = (JMethod) currentScope;
 	}
@@ -63,34 +64,16 @@ public class DefineScopesAndSymbols extends JBaseListener {
 	@Override
 	public void enterFormalParameter(JParser.FormalParameterContext ctx) {
 		String id = ctx.ID().getText();
-		Type type = null;
-		if (ctx.jType().ID() == null) {
-			if (ctx.jType().getText().trim().equals("int")){
-				type = JINT_TYPE;
-			} else {
-				type = JFLOAT_TYPE;
-			}
-		} else {
-			String jtype = ctx.jType().ID().getText();
-			Symbol symbol = currentScope.resolve(jtype);
-			if (symbol == null) {
-				System.err.println("No such var: "+ jtype);
-				return;
-			} else {
-				//
-			}
-		}
-		JArg jArg = new JArg(id, type);
+		JArg jArg = new JArg(id);
+		jArg.setType((Type) currentScope.resolve(ctx.jType().getText()));
 		currentScope.define(jArg);
 	}
 
 	@Override
 	public void enterBlock(JParser.BlockContext ctx) {
-		JMethod jMethod = new JMethod("local", RuleContext.EMPTY);
-		currentScope.define(jMethod);
-		//JArg jArg = new JArg("xxxxx", JINT_TYPE);
-		//currentScope.define(jArg);///////////////////////////////
-		currentScope = new LocalScope(currentScope);
+		LocalScope localScope = new LocalScope(currentScope);
+		currentScope.nest(localScope);
+		currentScope = localScope;
 		ctx.scope = (LocalScope) currentScope;
 	}
 
@@ -103,52 +86,22 @@ public class DefineScopesAndSymbols extends JBaseListener {
 	public void enterFieldDeclaration(JParser.FieldDeclarationContext ctx) {
 		String id = ctx.ID().getText();
 		JField jField = new JField(id);
+		jField.setType((Type) currentScope.resolve(ctx.jType().getText()));
 		currentScope.define(jField);
-	}
-
-	@Override
-	public void enterIdRef(JParser.IdRefContext ctx) {
-		String id = ctx.ID().getText();
-		Symbol symbol = currentScope.resolve(id);
-		if ( symbol==null ) {
-			System.err.println("No such var: "+ id);
-		}
-	}
-
-	@Override
-	public void enterThisRef(JParser.ThisRefContext ctx) {
-		System.out.println("thisssss");
-		// what should I do ? (for now checking in enterFieldRef method).
-	}
-
-	@Override
-	public void enterFieldRef(JParser.FieldRefContext ctx) {
-		String isThis = ctx.expression().getText();
-		if (isThis.equals("this")) {
-			String id = ctx.ID().getText();
-			Symbol symbol = currentScope.getEnclosingScope().getEnclosingScope().resolve(id);
-			if ( symbol==null ) {
-				System.err.println("No such var: "+ id);
-			}
-		}
 	}
 
 	@Override
 	public void enterLocalVariableDeclaration(JParser.LocalVariableDeclarationContext ctx) {
 		String id = ctx.ID().getText();
-		Type type;
-		if (ctx.jType().getText().trim().equals("int")){
-			type = JINT_TYPE;
-		} else {
-			type = JFLOAT_TYPE;
-		}
-		JArg jArg = new JArg(id, type);
+		JArg jArg = new JArg(id);
+		jArg.setType((Type) currentScope.resolve(ctx.jType().getText()));
 		currentScope.define(jArg);
 	}
 
 	@Override
 	public void enterMain(JParser.MainContext ctx) {
 		JMethod jMethod = new JMethod("main", ctx.block());
+		jMethod.setType(computeTypes.JVOID_TYPE);
 		currentScope.define(jMethod);
 		currentScope = jMethod;
 		ctx.scope = (JMethod) currentScope;

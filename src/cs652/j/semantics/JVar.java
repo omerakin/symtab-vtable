@@ -7,8 +7,7 @@ import org.antlr.symtab.VariableSymbol;
  * Created by omerakin on 2/28/17.
  */
 public class JVar extends VariableSymbol {
-    public JVar(String name, Type type) {
+    public JVar(String name) {
         super(name);
-        setType(type);
     }
 }

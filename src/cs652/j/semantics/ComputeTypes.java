@@ -38,7 +38,8 @@ public class ComputeTypes extends JBaseListener {
 				//
 			}
 		}
-		JArg jArg = new JArg(id, type);
+		JArg jArg = new JArg(id);
+		jArg.setType(type);
 		currentScope.define(jArg);
 	}
 

@@ -7,8 +7,7 @@ import org.antlr.symtab.Type;
  * Created by omerakin on 2/28/17.
  */
 public class JArg extends ParameterSymbol {
-    public JArg(String name, Type type) {
+    public JArg(String name) {
         super(name);
-        setType(type);
     }
 }
