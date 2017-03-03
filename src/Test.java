@@ -1,6 +1,7 @@
 
 import cs652.j.parser.JLexer;
 import cs652.j.parser.JParser;
+import cs652.j.semantics.ComputeTypes;
 import cs652.j.semantics.DefineScopesAndSymbols;
 import org.antlr.symtab.GlobalScope;
 import org.antlr.symtab.Utils;
@@ -29,7 +30,13 @@ public class Test {
         DefineScopesAndSymbols defSymbols = new DefineScopesAndSymbols(globals);
         walker.walk(defSymbols, parseTree);
 
-        System.out.println( Utils.toString(globals));
+        //System.out.println( Utils.toString(globals));
+
+        ComputeTypes computeTypes = new ComputeTypes(globals);
+        walker = new ParseTreeWalker();
+        walker.walk(computeTypes, parseTree);
+
+        System.out.println( computeTypes.getRefOutput());
     }
 
 }

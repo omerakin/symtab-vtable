@@ -23,47 +23,41 @@ public class ComputeTypes extends JBaseListener {
 
 
 	@Override
-	public void enterFormalParameter(JParser.FormalParameterContext ctx) {
-		String id = ctx.ID().getText();
-		Type type = null;
-		if (ctx.jType().ID() == null) {
-			type = new JPrimitiveType(ctx.jType().getText());
-		} else {
-			String jtype = ctx.jType().ID().getText();
-			Symbol symbol = currentScope.resolve(jtype);
-			if (symbol == null) {
-				System.err.println("No such var: "+ jtype);
-				return;
-			} else {
-				//
-			}
-		}
-		JArg jArg = new JArg(id);
-		jArg.setType(type);
-		currentScope.define(jArg);
+	public void enterAssignStat(JParser.AssignStatContext ctx) {
+		//buf.append(ctx.expression(0).getText() + " is " + ctx.expression(1).getText());
 	}
 
 	@Override
 	public void enterLocalVariableDeclaration(JParser.LocalVariableDeclarationContext ctx) {
 		String id = ctx.ID().getText();
-		String type = ctx.jType().getText();
-		//JVar jVar = new JVar(id); ///////////////////////////
-		buf.append( id + " is " + type + System.lineSeparator());
-	}
+		Symbol symbol = null;
 
-	@Override
-	public void enterCtorCall(JParser.CtorCallContext ctx) {
-		String id = ctx.ID().getText();
-		buf.append( ctx.getText() + " is " + id + System.lineSeparator());
+
+		System.out.println( Utils.toString(currentScope));
+
+
+		for (Symbol s: currentScope.getAllSymbols()) {
+			//System.out.println(s.getName());
+		}
+
+
+
+		//System.out.println("buraaaa" + symbol.getName());
+		if (symbol instanceof JField)
+		buf.append( id + " is " + ((JField) symbol).getType() + System.lineSeparator());
 	}
 
 	@Override
 	public void enterIdRef(JParser.IdRefContext ctx) {
+		 //buf.append(ctx.ID().getText());
+
+
 		String id = ctx.ID().getText();
 		Symbol symbol = currentScope.resolve(id);
 		if (symbol instanceof JArg) {
 			buf.append( id + " is " + ((JArg) symbol).getType() + System.lineSeparator());
 		}
+
 	}
 
 	public String getRefOutput() {
