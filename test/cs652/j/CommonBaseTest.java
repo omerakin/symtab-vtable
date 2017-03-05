@@ -58,8 +58,8 @@ public abstract class CommonBaseTest {
 		}
 		Collection<Object[]> result = new ArrayList<>();
 		// only feed test methods with .ts source files.
-		File dir = new File("/Users/omerakin/git/CS 652/vtable-symtab-omerakinusf/resources/samples");//////////////////////////////////////
-		//File dir = new File(testFolder.getPath());
+		//File dir = new File("/Users/omerakin/git/CS 652/vtable-symtab-omerakinusf/resources/samples");//////////////////////////////////////
+		File dir = new File(testFolder.getPath());
 		File[] files = dir.listFiles();
 		if ( files!=null ) {
 			for (File f : files) {

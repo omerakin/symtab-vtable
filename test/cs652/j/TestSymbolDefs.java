@@ -36,8 +36,8 @@ public class TestSymbolDefs extends CommonBaseTest {
 
 	public void checkSymbolDefs(String filename) throws Exception {
 		URL testFolderURL = TestSymbolDefs.class.getClassLoader().getResource(SAMPLES_DIR);
-		//String testFolder = testFolderURL.getPath();
-		String testFolder = "/Users/omerakin/git/CS 652/vtable-symtab-omerakinusf/target/classes/samples"; ////////////////////////////////////////
+		String testFolder = testFolderURL.getPath();
+		//String testFolder = "/Users/omerakin/git/CS 652/vtable-symtab-omerakinusf/target/classes/samples"; ////////////////////////////////////////
 
 		String J_pathToFile = testFolder+"/"+filename;
 		String Sym_filename = basename(filename)+".defs";

@@ -3,6 +3,7 @@ package cs652.j.semantics;
 import cs652.j.parser.JBaseListener;
 import cs652.j.parser.JParser;
 import org.antlr.symtab.*;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.HashMap;
 
@@ -38,18 +39,22 @@ public class ComputeTypes extends JBaseListener {
 		String[] string =ctx.getText().trim().split("\\.");
 		for (int i=0; i<string.length-1; i++) {
 			String s = string[i];
-			Symbol symbol = currentScope.resolve(s);
-			if (symbol instanceof JArg) {
-				String type = ((JArg) symbol).getType().getName();
-				String ddd = ctx.ID().getText();
-				Symbol symbol1 = ((Scope) globalScope.getSymbol(type)).getSymbol(ctx.ID().getText());
+			Symbol symbol;
+			if (i == 0) symbol = currentScope.resolve(s); else symbol = globalScope.resolve(ctx.type.getName());
+			if (symbol instanceof JArg || symbol instanceof JClass) {
+				String type;
+				if (symbol instanceof JArg) type = ((JArg) symbol).getType().getName(); else type = symbol.getName();
+				String ddd = string[i+1].replace("()","");
+				Symbol symbol1 = ((Scope) globalScope.getSymbol(type)).getSymbol(string[i+1].replace("()",""));
 				while (symbol1==null && !extendClasses.isEmpty() && extendClasses.get(type)!=null) {
 					String extendType = extendClasses.get(type);
-					symbol1 =  ((Scope) globalScope.getSymbol(extendType)).getSymbol(ctx.ID().getText());
+					symbol1 =  ((Scope) globalScope.getSymbol(extendType)).getSymbol(string[i+1].replace("()",""));
 					type =  extendType;
 				}
 				if (symbol1 instanceof JField) {
 					ctx.type = ((JField) symbol1).getType();
+				} else if (symbol1 instanceof JMethod) {
+					ctx.type = ((JMethod) symbol1).getType();
 				}
 			}
 		}
@@ -57,31 +62,39 @@ public class ComputeTypes extends JBaseListener {
 
 	@Override
 	public void exitFieldRef(JParser.FieldRefContext ctx) {
-		if (ctx.type != null) {
-			buf.append(ctx.getText() + " is " + ctx.type.getName() + System.lineSeparator());
-		} else {
-			buf.append(ctx.getText() + " lllaaaaaaaaaaaaaaaa " + System.lineSeparator());
-		}
+		buf.append(ctx.getText() + " is " + ctx.type.getName() + System.lineSeparator());
 	}
 
 	@Override
 	public void enterMethodCall(JParser.MethodCallContext ctx) {
 		Symbol symbol = currentScope.resolve(ctx.ID().getText());
-		if (symbol instanceof JMethod) { ctx.type = ((JMethod) symbol).getType(); }
-	}
-
-	@Override
-	public void exitMethodCall(JParser.MethodCallContext ctx) {
-		if (ctx.type != null) {
-			buf.append(ctx.getText() + " is " + ctx.type.getName() + System.lineSeparator());
+		if (symbol instanceof JMethod) {
+			ctx.type = ((JMethod) symbol).getType();
 		} else {
-			buf.append(ctx.getText() + " mmeetthhooddd " + System.lineSeparator());
+			ParserRuleContext parserRuleContext = ctx.getParent();
+			while (!parserRuleContext.getClass().getSimpleName().contains("ClassDeclarationContext")) {
+				parserRuleContext = parserRuleContext.getParent();
+			}
+			String type = parserRuleContext.getChild(1).getText();
+			while (symbol==null && !extendClasses.isEmpty() && extendClasses.get(type)!=null) {
+				String extendType = extendClasses.get(type);
+				symbol =  ((Scope) globalScope.getSymbol(extendType)).getSymbol(ctx.ID().getText());
+				type =  extendType;
+			}
+			if (symbol instanceof JMethod) {
+				ctx.type = ((JMethod) symbol).getType();
+			}
 		}
 	}
 
 	@Override
+	public void exitMethodCall(JParser.MethodCallContext ctx) {
+		buf.append(ctx.getText() + " is " + ctx.type.getName() + System.lineSeparator());
+	}
+
+	@Override
 	public void enterQMethodCall(JParser.QMethodCallContext ctx) {
-		String s = ctx.expression().getText();
+		String s = ctx.getText();
 		Symbol symbol = currentScope.resolve(ctx.expression().getText());
 		if (symbol instanceof JArg) {
 			String type = ((JArg) symbol).getType().getName();
@@ -94,17 +107,14 @@ public class ComputeTypes extends JBaseListener {
 			if (symbol1 instanceof JMethod) {
 				ctx.type = ((JMethod) symbol1).getType();
 			}
+		} else {
+			ctx.type = JINT_TYPE;
 		}
 	}
 
 	@Override
 	public void exitQMethodCall(JParser.QMethodCallContext ctx) {
-		if (ctx.type != null) {
-			buf.append(ctx.getText() + " is " + ctx.type.getName() + System.lineSeparator());
-		} else {
-			buf.append(ctx.getText() + " problemmmm " + System.lineSeparator());
-		}
-
+		buf.append(ctx.getText() + " is " + ctx.type.getName() + System.lineSeparator());
 	}
 
 	@Override
