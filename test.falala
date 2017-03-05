@@ -1,25 +1,18 @@
-class Employee {
-    int ID;
-    int getID() { return ID; }
-    void setID(int ID) { this.ID = ID; }
+class Animal {
+    int getID() { return 99; }
 }
-class Mgr extends Employee {
-    int level;
+
+class Dog extends Animal {
+    void blort() { }
 }
-class Coder extends Employee {
-    float salary;
-    Mgr boss;
-    void raise(float v) { salary = v; }
-    void speak() { printf("I am %d\n", ID); }
-    void workFor(Employee e) { boss=e; }
+
+class Pekinese extends Dog {
+    int foo() { return getID(); }
+    int bar() { return this.getID(); }
 }
-int ID;
-ID = 1;
-Coder c;
-c = new Coder();
-c.ID = ID;
-c.boss = new Mgr();
-c.boss.level = 99;
-c.boss.ID = 4;
-printf("%d\n", c.boss.getID());
-c.speak();
+
+Pekinese d;
+d = new Pekinese();
+printf("%d\n", d.getID());
+printf("%d\n", d.foo());
+printf("%d\n", d.bar());

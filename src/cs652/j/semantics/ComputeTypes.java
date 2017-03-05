@@ -34,17 +34,22 @@ public class ComputeTypes extends JBaseListener {
 
 	@Override
 	public void enterFieldRef(JParser.FieldRefContext ctx) {
-		Symbol symbol = currentScope.resolve(ctx.expression().getText());
-		if (symbol instanceof JArg) {
-			String type = ((JArg) symbol).getType().getName();
-			Symbol symbol1 = ((Scope) globalScope.getSymbol(type)).getSymbol(ctx.ID().getText());
-			if (symbol1 instanceof JField) {
-				ctx.type = ((JField) symbol1).getType();
-			}  else if ((symbol1 == null) && (!extendClasses.isEmpty())){
-				String extendType = extendClasses.get(type);
-				Symbol symbol2 = ((Scope) globalScope.getSymbol(extendType)).getSymbol(ctx.ID().getText());
-				if (symbol2 instanceof JField) {
-					ctx.type = ((JField) symbol2).getType();
+		String s2 = ctx.getText();
+		String[] string =ctx.getText().trim().split("\\.");
+		for (int i=0; i<string.length-1; i++) {
+			String s = string[i];
+			Symbol symbol = currentScope.resolve(s);
+			if (symbol instanceof JArg) {
+				String type = ((JArg) symbol).getType().getName();
+				String ddd = ctx.ID().getText();
+				Symbol symbol1 = ((Scope) globalScope.getSymbol(type)).getSymbol(ctx.ID().getText());
+				while (symbol1==null && !extendClasses.isEmpty() && extendClasses.get(type)!=null) {
+					String extendType = extendClasses.get(type);
+					symbol1 =  ((Scope) globalScope.getSymbol(extendType)).getSymbol(ctx.ID().getText());
+					type =  extendType;
+				}
+				if (symbol1 instanceof JField) {
+					ctx.type = ((JField) symbol1).getType();
 				}
 			}
 		}
@@ -52,12 +57,11 @@ public class ComputeTypes extends JBaseListener {
 
 	@Override
 	public void exitFieldRef(JParser.FieldRefContext ctx) {
-		buf.append(ctx.getText() + " is " + ctx.type.getName() + System.lineSeparator());
-	}
-
-	@Override
-	public void exitMethodCall(JParser.MethodCallContext ctx) {
-		buf.append(ctx.getText() + " is " + ctx.type.getName() + System.lineSeparator());
+		if (ctx.type != null) {
+			buf.append(ctx.getText() + " is " + ctx.type.getName() + System.lineSeparator());
+		} else {
+			buf.append(ctx.getText() + " lllaaaaaaaaaaaaaaaa " + System.lineSeparator());
+		}
 	}
 
 	@Override
@@ -67,12 +71,26 @@ public class ComputeTypes extends JBaseListener {
 	}
 
 	@Override
+	public void exitMethodCall(JParser.MethodCallContext ctx) {
+		if (ctx.type != null) {
+			buf.append(ctx.getText() + " is " + ctx.type.getName() + System.lineSeparator());
+		} else {
+			buf.append(ctx.getText() + " mmeetthhooddd " + System.lineSeparator());
+		}
+	}
+
+	@Override
 	public void enterQMethodCall(JParser.QMethodCallContext ctx) {
 		String s = ctx.expression().getText();
 		Symbol symbol = currentScope.resolve(ctx.expression().getText());
 		if (symbol instanceof JArg) {
 			String type = ((JArg) symbol).getType().getName();
 			Symbol symbol1 = ((Scope) globalScope.getSymbol(type)).getSymbol(ctx.ID().getText());
+			while (symbol1==null && !extendClasses.isEmpty()) {
+				String extendType = extendClasses.get(type);
+				symbol1 =  ((Scope) globalScope.getSymbol(extendType)).getSymbol(ctx.ID().getText());
+				type =  extendType;
+			}
 			if (symbol1 instanceof JMethod) {
 				ctx.type = ((JMethod) symbol1).getType();
 			}
@@ -81,26 +99,34 @@ public class ComputeTypes extends JBaseListener {
 
 	@Override
 	public void exitQMethodCall(JParser.QMethodCallContext ctx) {
-		buf.append(ctx.getText() + " is " + ctx.type.getName() + System.lineSeparator());
+		if (ctx.type != null) {
+			buf.append(ctx.getText() + " is " + ctx.type.getName() + System.lineSeparator());
+		} else {
+			buf.append(ctx.getText() + " problemmmm " + System.lineSeparator());
+		}
+
 	}
 
 	@Override
 	public void enterIdRef(JParser.IdRefContext ctx) {
-		String str = ctx.ID().getText();
 		Symbol symbol = currentScope.resolve(ctx.ID().getText());
 		if (symbol != null) {
 			if (symbol instanceof JArg) { ctx.type = ((JArg) symbol).getType(); }
 			else if (symbol instanceof JField) { ctx.type = ((JField) symbol).getType(); }
-		} else if (!extendClasses.isEmpty()){
-
-			String extendType = extendClasses.get(ctx.ID().getText());
-			//Symbol symbol2 = ((Scope) globalScope.getSymbol(extendType)).getSymbol(ctx.ID().getText());
-			//if (symbol2 instanceof JField) {
-			//	ctx.type = ((JField) symbol2).getType();
-			//}
-
-
-			ctx.type = JFLOAT_TYPE; ///////////////////////////////bakkkkk
+		} else {
+			symbol = currentScope.resolve("this");
+			if (symbol instanceof JArg) {
+				String type = ((JArg) symbol).getType().getName();
+				Symbol symbol2 = null;
+				while (symbol2==null && !extendClasses.isEmpty()) {
+					String extendType = extendClasses.get(type);
+					symbol2 =  ((Scope) globalScope.getSymbol(extendType)).getSymbol(ctx.ID().getText());
+					type =  extendType;
+				}
+				if (symbol2 instanceof JField) {
+					ctx.type = ((JField) symbol2).getType();
+				}
+			}
 		}
 	}
 
