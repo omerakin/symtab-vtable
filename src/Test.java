@@ -36,7 +36,7 @@ public class Test {
         walker = new ParseTreeWalker();
         walker.walk(computeTypes, parseTree);
 
-        System.out.println( computeTypes.getRefOutput());
+        System.out.println(System.lineSeparator() + computeTypes.getRefOutput());
     }
 
 }

@@ -47,6 +47,8 @@ public class DefineScopesAndSymbols extends JBaseListener {
 		JMethod jMethod = new JMethod(id, ctx.methodBody());
 		if (ctx.jType() != null) {
 			jMethod.setType((Type) currentScope.resolve(ctx.jType().getText()));
+		} else {
+			jMethod.setType(computeTypes.JVOID_TYPE);
 		}
 		currentScope.define(jMethod);
 		currentScope = jMethod;
