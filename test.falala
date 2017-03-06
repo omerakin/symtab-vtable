@@ -1,35 +1,18 @@
-class Employee {
-    int number;
-    int getID() { return 123; }
-    int something() {
-      this.getID();
-      return 99;
-    }
-}
-class Mgr extends Employee {
-    int level;
-    Employee other;
-}
-class Coder extends Employee {
-    Mgr boss;
-}
-class Pro extends Coder {
-  Coder getCoder() {
-      Coder c;
-      c = new Coder();
-      c.boss = new Mgr();
-      c.boss.other = new Employee();
-      return c;
-    }
+class Animal {
+    int getID() { return 99; }
 }
 
-Pro pro;
-pro = new Pro();
+class Dog extends Animal {
+    void blort() { }
+}
 
-pro.boss = new Mgr();
-pro.boss.other = new Employee();
-pro.boss.other.number = pro.getCoder().boss.other.getID();
+class Pekinese extends Dog {
+    int foo() { return getID(); }
+    int bar() { return this.getID(); }
+}
 
-printf("%d\n", pro.boss.other.number);
-printf("%d\n", pro.boss.getID());
-printf("%d\n", pro.boss.something());
+Pekinese d;
+d = new Pekinese();
+printf("%d\n", d.getID());
+printf("%d\n", d.foo());
+printf("%d\n", d.bar());
