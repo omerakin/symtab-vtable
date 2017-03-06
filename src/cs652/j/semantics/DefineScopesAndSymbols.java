@@ -29,8 +29,10 @@ public class DefineScopesAndSymbols extends JBaseListener {
 
 	@Override
 	public void enterClassDeclaration(JParser.ClassDeclarationContext ctx) {
+		String s = ctx.getText();
 		String id = ctx.ID(0).getText();
 		JClass jClass = new JClass(id, ctx.classBody());
+		if (ctx.ID(1) != null){ jClass.setSuperClass(ctx.ID(1).getText()); }
 		currentScope.define(jClass);
 		currentScope = jClass;
 		ctx.scope = (JClass) currentScope;

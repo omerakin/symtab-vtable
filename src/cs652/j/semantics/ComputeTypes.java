@@ -11,7 +11,6 @@ import java.util.HashMap;
 public class ComputeTypes extends JBaseListener {
 	protected StringBuilder buf = new StringBuilder();
 	protected Scope currentScope, globalScope;
-	protected HashMap<String, String> extendClasses;
 
 	public static final Type JINT_TYPE = new JPrimitiveType("int");
 	public static final Type JFLOAT_TYPE = new JPrimitiveType("float");
@@ -21,18 +20,12 @@ public class ComputeTypes extends JBaseListener {
 	public ComputeTypes(GlobalScope globals) {
 		this.currentScope = globals;
 		globalScope = globals;
-		extendClasses = new HashMap<>();
 	}
 
     @Override
     public void exitFieldRef(JParser.FieldRefContext ctx) {
         Type type = ctx.expression().type;
         Symbol symbol = ((JClass) type).resolve(ctx.ID().getText());
-        String extendType = type.getName();
-        while (symbol == null) {
-            symbol = ((Scope) globalScope.resolve(extendClasses.get(extendType))).getSymbol(ctx.ID().getText());
-            extendType = extendClasses.get(extendType);
-        }
         ctx.type = ((JField) symbol).getType();
 
         buf.append(ctx.getText() + " is " + ctx.type.getName() + System.lineSeparator());
@@ -42,11 +35,6 @@ public class ComputeTypes extends JBaseListener {
     public void exitQMethodCall(JParser.QMethodCallContext ctx) {
         Type type = ctx.expression().type;
         Symbol symbol = ((JClass) type).resolve(ctx.ID().getText());
-        String extendType = type.getName();
-        while (symbol==null) {
-            symbol = ((Scope) globalScope.resolve(extendClasses.get(extendType))).getSymbol(ctx.ID().getText());
-            extendType = extendClasses.get(extendType);
-        }
         ctx.type = ((JMethod) symbol).getType();
 
         buf.append(ctx.getText() + " is " + ctx.type.getName() + System.lineSeparator());
@@ -67,20 +55,6 @@ public class ComputeTypes extends JBaseListener {
         Symbol symbol = currentScope.resolve(ctx.ID().getText());
         if (symbol instanceof JMethod) {
             ctx.type = ((JMethod) symbol).getType();
-        } else {
-            ParserRuleContext parserRuleContext = ctx.getParent();
-            while (!parserRuleContext.getClass().getSimpleName().contains("ClassDeclarationContext")) {
-                parserRuleContext = parserRuleContext.getParent();
-            }
-            String type = parserRuleContext.getChild(1).getText();
-            while (symbol==null && !extendClasses.isEmpty() && extendClasses.get(type)!=null) {
-                String extendType = extendClasses.get(type);
-                symbol =  ((Scope) globalScope.getSymbol(extendType)).getSymbol(ctx.ID().getText());
-                type =  extendType;
-            }
-            if (symbol instanceof JMethod) {
-                ctx.type = ((JMethod) symbol).getType();
-            }
         }
     }
 
@@ -113,23 +87,11 @@ public class ComputeTypes extends JBaseListener {
 	@Override
 	public void enterIdRef(JParser.IdRefContext ctx) {
 		Symbol symbol = currentScope.resolve(ctx.ID().getText());
-		if (symbol != null) {
-			if (symbol instanceof JArg) { ctx.type = ((JArg) symbol).getType(); }
-			else if (symbol instanceof JField) { ctx.type = ((JField) symbol).getType(); }
-		} else {
-			symbol = currentScope.resolve("this");
-			if (symbol instanceof JArg) {
-				String type = ((JArg) symbol).getType().getName();
-				Symbol symbol2 = null;
-				while (symbol2==null && !extendClasses.isEmpty()) {
-					String extendType = extendClasses.get(type);
-					symbol2 =  ((Scope) globalScope.getSymbol(extendType)).getSymbol(ctx.ID().getText());
-					type =  extendType;
-				}
-				if (symbol2 instanceof JField) {
-					ctx.type = ((JField) symbol2).getType();
-				}
-			}
+		if (symbol instanceof JArg) {
+			ctx.type = ((JArg) symbol).getType();
+		}
+		else if (symbol instanceof JField) {
+			ctx.type = ((JField) symbol).getType();
 		}
 	}
 
@@ -150,7 +112,6 @@ public class ComputeTypes extends JBaseListener {
 
 	@Override
 	public void enterClassDeclaration(JParser.ClassDeclarationContext ctx) {
-		if (ctx.getText().contains("extends")) { extendClasses.put(ctx.ID(0).getText().trim(),ctx.ID(1).getText().trim()); }
 		currentScope = ctx.scope;
 	}
 
