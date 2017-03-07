@@ -3,10 +3,6 @@ package cs652.j.semantics;
 import cs652.j.parser.JBaseListener;
 import cs652.j.parser.JParser;
 import org.antlr.symtab.*;
-import org.antlr.v4.runtime.ParserRuleContext;
-import sun.jvm.hotspot.types.Field;
-
-import java.util.HashMap;
 
 public class ComputeTypes extends JBaseListener {
 	protected StringBuilder buf = new StringBuilder();
@@ -53,9 +49,7 @@ public class ComputeTypes extends JBaseListener {
     @Override
     public void enterMethodCall(JParser.MethodCallContext ctx) {
         Symbol symbol = currentScope.resolve(ctx.ID().getText());
-        if (symbol instanceof JMethod) {
-            ctx.type = ((JMethod) symbol).getType();
-        }
+        if (symbol instanceof JMethod) { ctx.type = ((JMethod) symbol).getType(); }
     }
 
     @Override
@@ -87,12 +81,8 @@ public class ComputeTypes extends JBaseListener {
 	@Override
 	public void enterIdRef(JParser.IdRefContext ctx) {
 		Symbol symbol = currentScope.resolve(ctx.ID().getText());
-		if (symbol instanceof JArg) {
-			ctx.type = ((JArg) symbol).getType();
-		}
-		else if (symbol instanceof JField) {
-			ctx.type = ((JField) symbol).getType();
-		}
+		if (symbol instanceof JArg) { ctx.type = ((JArg) symbol).getType(); }
+		else if (symbol instanceof JField) { ctx.type = ((JField) symbol).getType(); }
 	}
 
 	@Override
