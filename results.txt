@@ -1,0 +1,51 @@
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building vtable semantic analysis 1.0
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.2:enforce (enforce-maven) @ vtable-symtab ---
+[INFO] 
+[INFO] --- antlr4-maven-plugin:4.5.1:antlr4 (antlr) @ vtable-symtab ---
+[INFO] ANTLR 4: Processing source directory /Users/parrt/grading/cs652/S17/vtable-symtab-omerakinusf/grammars
+[INFO] Processing grammar: cs652/j/parser/J.g4
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ vtable-symtab ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 78 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ vtable-symtab ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 15 source files to /Users/parrt/grading/cs652/S17/vtable-symtab-omerakinusf/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ vtable-symtab ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/parrt/grading/cs652/S17/vtable-symtab-omerakinusf/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ vtable-symtab ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 3 source files to /Users/parrt/grading/cs652/S17/vtable-symtab-omerakinusf/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ vtable-symtab ---
+[INFO] Surefire report directory: /Users/parrt/grading/cs652/S17/vtable-symtab-omerakinusf/target/surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running cs652.j.TestExprTypes
+Working dir: /var/folders/93/9kzk2ccm8xj8k70059b28jk80000gp/T/junit8972986746508334142
+ANTLR Tool version 4.5.1 used for code generation does not match the current runtime version 4.6ANTLR Tool version 4.5.1 used for code generation does not match the current runtime version 4.6Tests run: 26, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.141 sec
+Running cs652.j.TestSymbolDefs
+Tests run: 26, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.047 sec
+
+Results :
+
+Tests run: 52, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 2.185 s
+[INFO] Finished at: 2017-03-17T12:12:57-07:00
+[INFO] Final Memory: 23M/371M
+[INFO] ------------------------------------------------------------------------
